@@ -15,15 +15,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const TYPE_REMOTE = "remote"
-const TYPE_BACKUP = "backup"
+// TypeRemote remote selector
+const TypeRemote = "remote"
 
+// TypeBackup backup selector
+const TypeBackup = "backup"
+
+// Host information
 type Host struct {
 	host        string
 	isBroken    bool
 	brokenSince time.Time
 }
 
+// Worker data structure
 type Worker struct {
 	rwMutext sync.RWMutex
 	remote   []Host
@@ -34,9 +39,10 @@ type Worker struct {
 }
 
 var (
-	http_err error = fmt.Errorf("Response code is not 2xx")
+	errFoo error = fmt.Errorf("Response code is not 2xx")
 )
 
+// NewWorker create a new instance worker
 func NewWorker() *Worker {
 	w := Worker{}
 
@@ -72,7 +78,7 @@ func (w *Worker) init() {
 		brokenTimeout, err = time.ParseDuration(t)
 		cli.CheckError(err)
 
-		for _, host = range string_slice_unique(strings.Split(r, ";")) {
+		for _, host = range stringSliceUnique(strings.Split(r, ";")) {
 			h := Host{
 				host:     host,
 				isBroken: false,
@@ -81,7 +87,7 @@ func (w *Worker) init() {
 			w.remote = append(w.remote, h)
 		}
 
-		for _, host = range string_slice_unique(strings.Split(b, ";")) {
+		for _, host = range stringSliceUnique(strings.Split(b, ";")) {
 			h := Host{
 				host:     host,
 				isBroken: false,
@@ -147,16 +153,15 @@ func (w *Worker) doUpstreams(r *http.Request) *http.Response {
 				res, err := w.makeRequest(req)
 				c <- res
 
-				if err != nil && err != http_err {
-					w.markHostBroken(TYPE_REMOTE, id)
+				if err != nil && err != errFoo {
+					w.markHostBroken(TypeRemote, id)
 				}
 
 				return
-			} else {
-				c <- nil
-
-				return
 			}
+			c <- nil
+
+			return
 
 		}(i, host, resChan)
 	}
@@ -186,14 +191,13 @@ func (w *Worker) doBackups(r *http.Request) *http.Response {
 		if req = w.requestSetHost(host, r); req != nil {
 			res, err := w.makeRequest(req)
 
-			if err != nil && err != http_err {
-				w.markHostBroken(TYPE_BACKUP, id)
+			if err != nil && err != errFoo {
+				w.markHostBroken(TypeBackup, id)
 			}
 
 			return res
-		} else {
-			return nil
 		}
+		return nil
 	}
 
 	return nil
@@ -216,7 +220,7 @@ func (w *Worker) makeRequest(req *http.Request) (*http.Response, error) {
 	}
 
 	if err == nil {
-		err = http_err
+		err = errFoo
 	}
 
 	logger.Instance().WithFields(log.Fields{
@@ -245,30 +249,30 @@ func (w *Worker) requestSetHost(h Host, r *http.Request) *http.Request {
 	return req
 }
 
-func (w *Worker) markHostBroken(hostType string, hostId int) {
+func (w *Worker) markHostBroken(hostType string, hostID int) {
 	switch hostType {
-	case TYPE_REMOTE:
-		if w.remote[hostId].isBroken == false {
-			host := w.remote[hostId]
+	case TypeRemote:
+		if w.remote[hostID].isBroken == false {
+			host := w.remote[hostID]
 			host.isBroken = true
 			host.brokenSince = time.Now()
 
 			w.rwMutext.Lock()
-			w.remote[hostId] = host
+			w.remote[hostID] = host
 			w.rwMutext.Unlock()
 
 			logger.Instance().WithFields(log.Fields{
 				"host": host.String(),
 			}).Error("Remote host marked broken")
 		}
-	case TYPE_BACKUP:
-		if w.backup[hostId].isBroken == false {
-			host := w.backup[hostId]
+	case TypeBackup:
+		if w.backup[hostID].isBroken == false {
+			host := w.backup[hostID]
 			host.isBroken = true
 			host.brokenSince = time.Now()
 
 			w.rwMutext.Lock()
-			w.backup[hostId] = host
+			w.backup[hostID] = host
 			w.rwMutext.Unlock()
 
 			logger.Instance().WithFields(log.Fields{
@@ -288,14 +292,14 @@ func (w *Worker) getAliveHosts(hosts []Host) (result []Host) {
 	return result
 }
 
-func string_slice_unique(slice []string) (result []string) {
+func stringSliceUnique(slice []string) (result []string) {
 	m := make(map[string]bool)
 
 	for _, v := range slice {
 		m[v] = true
 	}
 
-	for k, _ := range m {
+	for k := range m {
 		result = append(result, k)
 	}
 

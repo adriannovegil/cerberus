@@ -18,11 +18,13 @@ import (
 	"github.com/zenazn/goji/web/middleware"
 )
 
+// Result store the check result
 type Result struct {
 	Status  string `json:"status"`
 	Message string `json:"message,omitempty"`
 }
 
+// Host information
 type Host struct {
 	host        string
 	isBroken    bool
@@ -60,6 +62,7 @@ func initServer() {
 
 }
 
+// NewMux create a new Muxer
 func NewMux() *web.Mux {
 	initServer()
 

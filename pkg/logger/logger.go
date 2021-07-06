@@ -33,6 +33,7 @@ func initLogger() {
 	})
 }
 
+// Instance init and return the logger
 func Instance() *logrus.Logger {
 	initLogger()
 
