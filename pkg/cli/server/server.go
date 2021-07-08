@@ -38,7 +38,7 @@ func NewCmdServer() *cobra.Command {
 			ctx, cancel := context.WithCancel(ctx)
 
 			signalChan := make(chan os.Signal, 1)
-			signal.Notify(signalChan, os.Interrupt, syscall.SIGHUP)
+			signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 			defer func() {
 				signal.Stop(signalChan)
@@ -48,13 +48,10 @@ func NewCmdServer() *cobra.Command {
 			go func() {
 				for {
 					select {
-					case s := <-signalChan:
-						switch s {
-						case os.Interrupt:
-							log.Info().Msg("Got SIGINT/SIGTERM, exiting.")
-							cancel()
-							os.Exit(1)
-						}
+					case <-signalChan:
+						log.Info().Msg("Got SIGINT/SIGTERM, exiting.")
+						cancel()
+						os.Exit(1)
 					case <-ctx.Done():
 						log.Printf("Done.")
 						os.Exit(1)
