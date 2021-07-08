@@ -19,12 +19,12 @@ const defaultTick = 60 * time.Second
 
 // NewCmdServer start the server
 func NewCmdServer() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "server",
 		Short: "start the system server",
 		Run: func(cmd *cobra.Command, args []string) {
 			log.Info().Msg(fmt.Sprintf("Starting server with pid: %d", os.Getpid()))
-
+			daemonFlag, _ := cmd.Flags().GetBool("daemon")
 			//var port = config.System.Port
 			//if port == 0 {
 			//	//Default port
@@ -59,12 +59,25 @@ func NewCmdServer() *cobra.Command {
 				}
 			}()
 
+			if daemonFlag {
+				log.Info().Msg("Executing in daemon mode ...")
+
+			}
+
 			if err := run(ctx); err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
 				os.Exit(1)
 			}
+
 		},
 	}
+	addFlags(cmd)
+	return cmd
+}
+
+// Add flags to the command
+func addFlags(cmd *cobra.Command) {
+	cmd.Flags().BoolP("daemon", "d", false, "Daemon execution")
 }
 
 func run(ctx context.Context) error {
