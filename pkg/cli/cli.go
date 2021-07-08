@@ -8,14 +8,14 @@ import (
 
 	"devcircus.com/cerberus/pkg/cli/server"
 	"devcircus.com/cerberus/pkg/cli/version"
-	"devcircus.com/cerberus/pkg/config/system"
+	"devcircus.com/cerberus/pkg/config"
 )
 
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   system.GetAppName(),
+	Use:   config.System.AppName,
 	Short: "Cerberus - Monitor your URIs from your any place and get notified when your system is down or response time is more than expected.",
 	Long: `Monitor your URIs from your any place and get notified when your system is
 down or response time is more than expected.

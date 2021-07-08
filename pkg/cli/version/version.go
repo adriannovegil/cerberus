@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"devcircus.com/cerberus/pkg/config/system"
+	"devcircus.com/cerberus/pkg/config"
 )
 
 var ()
@@ -16,7 +16,7 @@ func NewCmdVersion() *cobra.Command {
 		Use:   "version",
 		Short: "show version statement",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("datanerd", system.GetVersion())
+			fmt.Println("cerberus", config.System.Version)
 		},
 	}
 }

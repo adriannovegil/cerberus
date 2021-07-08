@@ -1,9 +1,13 @@
 package server
 
 import (
-	"fmt"
+	"net/http"
+	"strconv"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+
+	"devcircus.com/cerberus/pkg/config"
 )
 
 var ()
@@ -14,7 +18,15 @@ func NewCmdServer() *cobra.Command {
 		Use:   "server",
 		Short: "start the system server",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Run server ...")
+			log.Info().Msg("Starting server ...")
+			var port = config.System.Port
+			if port == 0 {
+				//Default port
+				http.ListenAndServe(":7321", nil)
+			} else {
+				//if port is mentioned in config file
+				http.ListenAndServe(":"+strconv.Itoa(port), nil)
+			}
 		},
 	}
 }
