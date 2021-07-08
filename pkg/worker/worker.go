@@ -45,7 +45,6 @@ var (
 // NewWorker create a new instance worker
 func NewWorker() *Worker {
 	w := Worker{}
-
 	return &w
 }
 

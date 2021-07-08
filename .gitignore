@@ -7,6 +7,7 @@
 # App files
 swd
 config.yml
+config.cfg
 
 # Binaries for programs and plugins
 *.exe

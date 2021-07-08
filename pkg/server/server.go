@@ -138,7 +138,6 @@ func handleRequest(c web.C, w http.ResponseWriter, request *http.Request) {
 func hasFreeQueueSlots() bool {
 	if activeClients > activeClientsMax {
 		atomic.AddInt64(&activeClientsReachedTimes, 1)
-
 		return false
 	}
 
