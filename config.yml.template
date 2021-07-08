@@ -1,0 +1,6 @@
+appname: cerberus
+version: 0.1.0
+
+# Log level
+# panic, fatal, error, warn, info, debug, trace
+loglevel: info

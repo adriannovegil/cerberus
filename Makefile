@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-PROJECTNAME := swd
+PROJECTNAME := cerberus
 
 # Go related variables.
 GOBASE := $(shell pwd)
