@@ -1,13 +1,19 @@
+# App files
+cerberus
+config.yml
+config.yml.local
+.cache
+.secrets
+data/*.json
+
 ## Go
 /bin/
+dist/
+site/
 /test/tests.*
 /test/coverage.*
-/go.sum
-
-# App files
-swd
-config.yml
-config.cfg
+*.swp
+go.sum
 
 # Binaries for programs and plugins
 *.exe
@@ -23,13 +29,67 @@ config.cfg
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
-.idea
-.vscode
-SITERELENG*
-pods.json
+# Eclipse
+*.pydevproject
+.project
+.metadata
+tmp/
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+.factorypath
+/src/main/resources/rebel.xml
 
-# Mac dir cache
+# External tool builders
+.externalToolBuilders/**
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# Intellij
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+classes/
+out/
+
+# Visual Studio Code
+.vscode/
+
+# Windows
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Mac OSX
 .DS_Store
-_product*.csv
+.svn
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Logs
+*.log*
