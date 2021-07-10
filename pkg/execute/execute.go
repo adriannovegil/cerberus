@@ -12,6 +12,7 @@ import (
 func Daemon(proc func()) {
 	daemon.AddCommand(daemon.StringFlag(signalFlags, "quit"), syscall.SIGQUIT, termHandler)
 	daemon.AddCommand(daemon.StringFlag(signalFlags, "stop"), syscall.SIGTERM, termHandler)
+	daemon.AddCommand(daemon.StringFlag(signalFlags, "stop"), syscall.SIGKILL, termHandler)
 	daemon.AddCommand(daemon.StringFlag(signalFlags, "reload"), syscall.SIGHUP, reloadHandler)
 
 	ctx := &daemon.Context{

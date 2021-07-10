@@ -45,19 +45,22 @@ func run(pidFile int, isDaemon bool) {
 
 //func worker(ctx context.Context) error {
 func worker() {
+LOOP:
 	for {
-		log.Info().Msg("Execution time ...")
 		// Calling Sleep method
 		time.Sleep(5 * time.Second)
-		//select {
-		//case <-ctx.Done():
-		//	return nil
-		//case <-time.Tick(defaultTick):
-		//	resp, err := http.Get("http://www.google.es")
-		//	if err != nil {
-		//		return err
-		//	}
-		//	log.Info().Msg(fmt.Sprintf("Status code 200, got: %d", resp.StatusCode))
-		//}
+		select {
+		case <-execute.Done:
+			log.Info().Msg("Graceful termination")
+			os.Exit(0)
+		case <-execute.Stop:
+			log.Warn().Msg("Process terminated by external signal")
+			break LOOP		
+		case <-execute.Reload:
+			log.Info().Msg("Reloading configuration")
+		default:
+			log.Info().Msg("Execution time ...")
+		}
 	}
+	os.Exit(1)
 }

@@ -15,7 +15,7 @@ func Interactive(proc func()) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	signal.Notify(signalChan, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGHUP)
 
 	defer func() {
 		signal.Stop(signalChan)
@@ -27,7 +27,7 @@ func Interactive(proc func()) {
 			select {
 			case s := <-signalChan:
 				switch s {
-				case syscall.SIGINT, syscall.SIGTERM:
+				case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGKILL:
 					termHandler(s)
 				case syscall.SIGHUP:
 					reloadHandler(s)
