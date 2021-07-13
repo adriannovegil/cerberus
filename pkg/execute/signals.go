@@ -26,7 +26,7 @@ func termHandler(sig os.Signal) error {
 	log.Debug().Msg("Termination requested")
 	if sig == syscall.SIGQUIT {
 		Done <- struct{}{}
-	}  else {
+	} else {
 		Stop <- struct{}{}
 	}
 	return daemon.ErrStop

@@ -19,7 +19,7 @@ func NewCmdServer() *cobra.Command {
 		Use:   "server",
 		Short: "start the system server",
 		Run: func(cmd *cobra.Command, args []string) {
-			log.Info().Msg(fmt.Sprintf("Starting server with pid: %d", os.Getpid()))
+			log.Info().Msg(fmt.Sprintf("Starting daemon with pid: %d", os.Getpid()))
 			isDaemon, _ := cmd.Flags().GetBool("daemon")
 			run(os.Getpid(), isDaemon)
 		},
@@ -55,7 +55,7 @@ LOOP:
 			os.Exit(0)
 		case <-execute.Stop:
 			log.Warn().Msg("Process terminated by external signal")
-			break LOOP		
+			break LOOP
 		case <-execute.Reload:
 			log.Info().Msg("Reloading configuration")
 		default:
