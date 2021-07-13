@@ -9,9 +9,14 @@ import (
 	"github.com/spf13/cobra"
 
 	"devcircus.com/cerberus/pkg/execute"
+	"devcircus.com/cerberus/pkg/worker"
 )
 
 const defaultTick = 60 * time.Second
+
+var (
+	supervisor *worker.Supervisor
+)
 
 // NewCmdServer start the server
 func NewCmdServer() *cobra.Command {
@@ -21,6 +26,7 @@ func NewCmdServer() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			log.Info().Msg(fmt.Sprintf("Starting daemon with pid: %d", os.Getpid()))
 			isDaemon, _ := cmd.Flags().GetBool("daemon")
+			supervisor = worker.NewSupervisor()
 			run(os.Getpid(), isDaemon)
 		},
 	}
@@ -36,31 +42,9 @@ func addFlags(cmd *cobra.Command) {
 func run(pidFile int, isDaemon bool) {
 	if isDaemon {
 		log.Info().Msg("Executing in daemon mode ...")
-		execute.Daemon(worker)
+		execute.Daemon(supervisor.Run)
 	} else {
 		log.Info().Msg("Executing in interactive mode ...")
-		execute.Interactive(worker)
+		execute.Interactive(supervisor.Run)
 	}
-}
-
-//func worker(ctx context.Context) error {
-func worker() {
-LOOP:
-	for {
-		// Calling Sleep method
-		time.Sleep(5 * time.Second)
-		select {
-		case <-execute.Done:
-			log.Info().Msg("Graceful termination")
-			os.Exit(0)
-		case <-execute.Stop:
-			log.Warn().Msg("Process terminated by external signal")
-			break LOOP
-		case <-execute.Reload:
-			log.Info().Msg("Reloading configuration")
-		default:
-			log.Info().Msg("Execution time ...")
-		}
-	}
-	os.Exit(1)
 }
