@@ -1,7 +1,6 @@
 package execute
 
 import (
-	"fmt"
 	"syscall"
 
 	"github.com/rs/zerolog/log"
@@ -16,7 +15,7 @@ func Daemon(proc func()) {
 	daemon.AddCommand(daemon.StringFlag(signalFlags, "reload"), syscall.SIGHUP, reloadHandler)
 
 	ctx := &daemon.Context{
-		PidFileName: "sample.pid",
+		PidFileName: "cerberus.pid",
 		PidFilePerm: 0644,
 		WorkDir:     "./",
 		Umask:       027,
@@ -24,7 +23,7 @@ func Daemon(proc func()) {
 
 	child, err := ctx.Reborn()
 	if err != nil {
-		log.Fatal().Msg(fmt.Sprintf("An error occured while trying to reborn daemon %s", err.Error()))
+		log.Fatal().Msgf("An error occured while trying to reborn daemon %s", err.Error())
 	}
 	if child != nil {
 		return
@@ -35,7 +34,7 @@ func Daemon(proc func()) {
 
 	err = daemon.ServeSignals()
 	if err != nil {
-		log.Error().Msg(fmt.Sprintf("Error %s", err.Error()))
+		log.Error().Msgf("Error %s", err.Error())
 	}
 
 	log.Info().Msg("daemon terminated")

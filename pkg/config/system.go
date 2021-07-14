@@ -32,8 +32,8 @@ func init() {
 
 // load system configuration
 func load() {
-	// Load configuration file
 	configor.Load(&System, "config.yml")
+	System.Requests = validateAndCreateIdsForRequests(System.Requests)
 }
 
 // ReLoad system configuration

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -24,7 +23,7 @@ func NewCmdServer() *cobra.Command {
 		Use:   "server",
 		Short: "start the system server",
 		Run: func(cmd *cobra.Command, args []string) {
-			log.Info().Msg(fmt.Sprintf("Starting daemon with pid: %d", os.Getpid()))
+			log.Info().Msgf("Starting daemon with pid: %d", os.Getpid())
 			isDaemon, _ := cmd.Flags().GetBool("daemon")
 			supervisor = worker.NewSupervisor()
 			run(os.Getpid(), isDaemon)
