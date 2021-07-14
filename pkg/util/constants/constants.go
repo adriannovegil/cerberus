@@ -1,9 +1,14 @@
 package constants
 
 import (
-	"time"
+	"net/http"
 )
 
 const (
-// Server
+	// DefaultTime request
+	DefaultTime = "300s"
+	// DefaultResponseCode value
+	DefaultResponseCode = http.StatusOK
+	// DefaultConcurrency for execution
+	DefaultConcurrency = 1
 )

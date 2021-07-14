@@ -8,16 +8,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"time"
 )
 
 var (
 	// RequestsList list of requests configuration
-	RequestsList   []RequestConfig
-	requestChannel chan RequestConfig
-	throttle       chan int
+	RequestsList []RequestConfig
+	throttle     chan int
 )
 
 const (
@@ -29,12 +27,6 @@ const (
 	FormContentType = "application/x-www-form-urlencoded"
 	// JSONContentType attribute
 	JSONContentType = "application/json"
-	// DefaultTime request
-	DefaultTime = "300s"
-	// DefaultResponseCode value
-	DefaultResponseCode = http.StatusOK
-	// DefaultConcurrency for execution
-	DefaultConcurrency = 1
 )
 
 // RequestConfig data structure
@@ -55,88 +47,44 @@ func (requestConfig *RequestConfig) SetID(id int) {
 	requestConfig.ID = id
 }
 
-// Validate whether all requestConfig fields are valid
-func (requestConfig *RequestConfig) Validate() error {
-
-	if len(requestConfig.URL) == 0 {
-		return errors.New("Invalid Url")
-	}
-
-	if _, err := url.Parse(requestConfig.URL); err != nil {
-		return errors.New("Invalid Url")
-	}
-
-	if len(requestConfig.RequestType) == 0 {
-		return errors.New("RequestType cannot be empty")
-	}
-
-	if requestConfig.ResponseTime == 0 {
-		return errors.New("ResponseTime cannot be empty")
-	}
-
-	if requestConfig.ResponseCode == 0 {
-		requestConfig.ResponseCode = DefaultResponseCode
-	}
-
-	if requestConfig.CheckEvery == 0 {
-		defTime, _ := time.ParseDuration(DefaultTime)
-		requestConfig.CheckEvery = defTime
-	}
-
-	return nil
-}
-
 // Init Initialize data from config file and check all requests
-func Init(data []RequestConfig, concurrency int) {
-	RequestsList = data
-
-	//throttle channel is used to limit number of requests performed at a time
-	if concurrency == 0 {
-		throttle = make(chan int, DefaultConcurrency)
-	} else {
-		throttle = make(chan int, concurrency)
-	}
-
-	requestChannel = make(chan RequestConfig, len(data))
-
-	if len(data) == 0 {
-		println("\nNo requests to monitor.Please add requests to you config file")
-		os.Exit(3)
-	}
-	//send requests to make sure every every request is valid
-	println("\nSending requests to apis.....making sure everything is right before we start monitoring")
-	println("Api Count: ", len(data))
-
-	for i, requestConfig := range data {
-		println("Request #", i, " : ", requestConfig.RequestType, " ", requestConfig.URL)
-
-		//Perform request
-		reqErr := PerformRequest(requestConfig, nil)
-
-		if reqErr != nil {
-			//Request Failed
-			println("\nFailed !!!! Not able to perfome below request")
-			println("\n----Request Deatails---")
-			println("Url :", requestConfig.URL)
-			println("Type :", requestConfig.RequestType)
-			println("Error Reason :", reqErr.Error())
-			println("\nPlease check the config file and try again")
-			os.Exit(3)
-		}
-	}
-
-	println("All requests Successfull")
-}
-
-// StartMonitoring start monitoring by calling createTicker method for each request
-//func StartMonitoring() {
-//	fmt.Println("\nStarted Monitoring all ", len(RequestsList), " apis .....")
-
-//	go listenToRequestChannel()
-
-//	for _, requestConfig := range RequestsList {
-//		go createTicker(requestConfig)
+//func Init(data []RequestConfig, concurrency int) {
+//	RequestsList = data
+//
+//	//throttle channel is used to limit number of requests performed at a time
+//	if concurrency == 0 {
+//		throttle = make(chan int, DefaultConcurrency)
+//	} else {
+//		throttle = make(chan int, concurrency)
 //	}
+//
+//	if len(data) == 0 {
+//		println("\nNo requests to monitor.Please add requests to you config file")
+//		os.Exit(3)
+//	}
+//	//send requests to make sure every every request is valid
+//	println("\nSending requests to apis.....making sure everything is right before we start monitoring")
+//	println("Api Count: ", len(data))
+//
+//	for i, requestConfig := range data {
+//		println("Request #", i, " : ", requestConfig.RequestType, " ", requestConfig.URL)
+//
+//		//Perform request
+//		reqErr := PerformRequest(requestConfig, nil)
+//
+//		if reqErr != nil {
+//			//Request Failed
+//			println("\nFailed !!!! Not able to perfome below request")
+//			println("\n----Request Deatails---")
+//			println("Url :", requestConfig.URL)
+//			println("Type :", requestConfig.RequestType)
+//			println("Error Reason :", reqErr.Error())
+//			println("\nPlease check the config file and try again")
+//			os.Exit(3)
+//		}
+//	}
+//
+//	println("All requests Successfull")
 //}
 
 // PerformRequest takes the date from requestConfig and creates http request and executes it

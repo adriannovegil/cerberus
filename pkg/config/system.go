@@ -33,7 +33,11 @@ func init() {
 // load system configuration
 func load() {
 	configor.Load(&System, "config.yml")
-	System.Requests = validateAndCreateIdsForRequests(System.Requests)
+
+	if err := validate(System.Requests); err != nil {
+		log.Fatal().Err(err).Msg("Invalid Request data in config file")
+	}
+	System.Requests = generateAndAssignIdsForRequests(System.Requests)
 }
 
 // ReLoad system configuration
