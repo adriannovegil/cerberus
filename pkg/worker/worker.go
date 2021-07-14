@@ -34,7 +34,13 @@ func (w *Worker) doWork() {
 		<-w.requestChannel
 		//throttle <- 1
 		log.Debug().Msgf("Performing request: %s %s", w.rConfig.RequestType, w.rConfig.URL)
-		go requests.PerformRequest(w.rConfig, nil)
+		reqErr := requests.PerformRequest(w.rConfig, nil)
+
+		if reqErr != nil {
+			log.Warn().Msgf("Error requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
+		} else {
+			log.Info().Msgf("Epic win requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
+		}
 	}
 }
 
