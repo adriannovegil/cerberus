@@ -11,14 +11,14 @@ import (
 // Worker execution data
 type Worker struct {
 	rConfig        requests.RequestConfig
-	requestChannel chan requests.RequestConfig
+	requestChannel chan bool
 }
 
 // NewWorker create a new instance worker
 func NewWorker(data requests.RequestConfig) *Worker {
 	w := Worker{}
 	w.rConfig = data
-	w.requestChannel = make(chan requests.RequestConfig, 1)
+	w.requestChannel = make(chan bool)
 	return &w
 }
 
@@ -31,12 +31,10 @@ func (w *Worker) doWork() {
 	//go w.listenToRequestChannel()
 	go w.createTicker()
 	for {
-		select {
-		case requect := <-w.requestChannel:
-			//throttle <- 1
-			log.Debug().Msgf("Performing request: %s %s", w.rConfig.RequestType, w.rConfig.URL)
-			go requests.PerformRequest(requect, nil)
-		}
+		<-w.requestChannel
+		//throttle <- 1
+		log.Debug().Msgf("Performing request: %s %s", w.rConfig.RequestType, w.rConfig.URL)
+		go requests.PerformRequest(w.rConfig, nil)
 	}
 }
 
@@ -48,7 +46,7 @@ func (w *Worker) createTicker() {
 	for {
 		select {
 		case <-ticker.C:
-			w.requestChannel <- w.rConfig
+			w.requestChannel <- true
 		case <-quit:
 			ticker.Stop()
 			return
