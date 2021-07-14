@@ -30,9 +30,7 @@ func (s *Supervisor) Run() {
 
 	data := config.System.Requests
 	for i, requestConfig := range data {
-
-		println("Launching worker #", i, " : ", requestConfig.RequestType, " ", requestConfig.URL)
-
+		log.Debug().Msgf("Launching worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
 		w := NewWorker(requestConfig)
 		workers = append(workers, *w)
 		w.Start()
@@ -52,9 +50,7 @@ LOOP:
 		case <-execute.Reload:
 			log.Info().Msg("Reloading configuration")
 		default:
-
 			log.Debug().Msg("Supervisor loop signal")
-
 		}
 	}
 	os.Exit(1)

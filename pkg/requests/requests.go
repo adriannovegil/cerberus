@@ -40,14 +40,14 @@ const (
 // RequestConfig data structure
 type RequestConfig struct {
 	ID           int
-	URL          string            `json:"url"`
-	RequestType  string            `json:"requestType"`
-	Headers      map[string]string `json:"headers"`
-	FormParams   map[string]string `json:"formParams"`
-	URLParams    map[string]string `json:"urlParams"`
-	ResponseCode int               `json:"responseCode"`
-	ResponseTime int64             `json:"responseTime"`
-	CheckEvery   time.Duration     `json:"checkEvery"`
+	URL          string            `yaml:"url"`
+	RequestType  string            `yaml:"requestType"`
+	Headers      map[string]string `yaml:"headers"`
+	FormParams   map[string]string `yaml:"formParams"`
+	URLParams    map[string]string `yaml:"urlParams"`
+	ResponseCode int               `yaml:"responseCode"`
+	ResponseTime int64             `yaml:"responseTime"`
+	CheckEvery   time.Duration     `yaml:"checkEvery"`
 }
 
 // SetID set Id for request
@@ -129,47 +129,15 @@ func Init(data []RequestConfig, concurrency int) {
 }
 
 // StartMonitoring start monitoring by calling createTicker method for each request
-func StartMonitoring() {
-	fmt.Println("\nStarted Monitoring all ", len(RequestsList), " apis .....")
+//func StartMonitoring() {
+//	fmt.Println("\nStarted Monitoring all ", len(RequestsList), " apis .....")
 
-	go listenToRequestChannel()
+//	go listenToRequestChannel()
 
-	for _, requestConfig := range RequestsList {
-		go createTicker(requestConfig)
-	}
-}
-
-// createTicker. A time ticker writes data to request channel for every
-// request.CheckEvery seconds
-func createTicker(requestConfig RequestConfig) {
-
-	var ticker *time.Ticker = time.NewTicker(requestConfig.CheckEvery * time.Second)
-	quit := make(chan struct{})
-	for {
-		select {
-		case <-ticker.C:
-			requestChannel <- requestConfig
-		case <-quit:
-			ticker.Stop()
-			return
-		}
-	}
-}
-
-// listenToRequestChannel all tickers write to request channel
-// here we listen to request channel and perfom each request
-func listenToRequestChannel() {
-
-	//throttle is used to limit number of requests executed at a time
-	for {
-		select {
-		case requect := <-requestChannel:
-			throttle <- 1
-			go PerformRequest(requect, throttle)
-		}
-	}
-
-}
+//	for _, requestConfig := range RequestsList {
+//		go createTicker(requestConfig)
+//	}
+//}
 
 // PerformRequest takes the date from requestConfig and creates http request and executes it
 func PerformRequest(requestConfig RequestConfig, throttle chan int) error {
