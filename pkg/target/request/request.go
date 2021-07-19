@@ -40,6 +40,7 @@ type Config struct {
 	ResponseCode int               `yaml:"responseCode"`
 	ResponseTime int64             `yaml:"responseTime"`
 	CheckEvery   time.Duration     `yaml:"checkEvery"`
+	Fallbacks    []string          `yaml:"fallbacks"`
 }
 
 // SetID set Id for request

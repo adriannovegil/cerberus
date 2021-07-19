@@ -1,13 +1,14 @@
 package worker
 
 import (
-	"fmt"
+	"context"
 	"time"
 
 	"github.com/rs/zerolog/log"
 
+	"devcircus.com/cerberus/pkg/config"
+	"devcircus.com/cerberus/pkg/fallback"
 	"devcircus.com/cerberus/pkg/target/request"
-	"devcircus.com/cerberus/pkg/util/shell"
 )
 
 // Worker execution data
@@ -42,11 +43,12 @@ func (w *Worker) doWork() {
 
 		if reqErr != nil {
 			log.Warn().Msgf("Error requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
-			stdout, stderr, _ := shell.RunCommand("ls", "-ltr")
-			fmt.Println("--- stdout ---")
-			fmt.Println(stdout)
-			fmt.Println("--- stderr ---")
-			fmt.Println(stderr)
+
+			for _, fallbackActionName := range w.rConfig.Fallbacks {
+				fallback.Execute(context.TODO(),
+					*config.GetFallbackCOnfigurationByName(fallbackActionName))
+			}
+
 		} else {
 			log.Info().Msgf("Epic win requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
 		}

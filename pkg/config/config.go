@@ -51,3 +51,13 @@ func load() {
 func ReLoad() {
 	load()
 }
+
+// GetFallbackCOnfigurationByName retutrn the fallback configuration by name
+func GetFallbackCOnfigurationByName(fallbackActionName string) *fallback.Config {
+	for _, fallbackConfig := range Config.Fallbacks {
+		if fallbackConfig.Name == fallbackActionName {
+			return &fallbackConfig
+		}
+	}
+	return nil
+}
