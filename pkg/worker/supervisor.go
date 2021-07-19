@@ -14,6 +14,9 @@ import (
 type Supervisor struct {
 }
 
+// TickerTime is the time between supervisor checks
+const TickerTime = 5
+
 var (
 	workers []Worker
 )
@@ -28,7 +31,7 @@ func NewSupervisor() *Supervisor {
 // Run launch the worker jobs
 func (s *Supervisor) Run() {
 
-	data := config.System.Requests
+	data := config.System.Targets.Requests
 	for i, requestConfig := range data {
 		log.Debug().Msgf("Launching worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
 		w := NewWorker(requestConfig)
@@ -39,7 +42,7 @@ func (s *Supervisor) Run() {
 LOOP:
 	for {
 		// Calling Sleep method
-		time.Sleep(5 * time.Second)
+		time.Sleep(TickerTime * time.Second)
 		select {
 		case <-execute.Done:
 			log.Info().Msg("Graceful termination")

@@ -13,12 +13,17 @@ import (
 
 // System configuration
 var System = struct {
-	AppName     string                   `yaml:"appname"`
-	Version     string                   `yaml:"version"`
-	LogLevel    string                   `yaml:"loglevel"`
-	Concurrency int                      `yaml:"concurrency"`
-	Requests    []requests.RequestConfig `yaml:"requests"`
+	AppName     string  `yaml:"appname"`
+	Version     string  `yaml:"version"`
+	LogLevel    string  `yaml:"loglevel"`
+	Concurrency int     `yaml:"concurrency"`
+	Targets     Targets `yaml:"targets"`
 }{}
+
+// Targets to control
+type Targets struct {
+	Requests []requests.RequestConfig `yaml:"requests"`
+}
 
 func init() {
 	load()
@@ -34,10 +39,10 @@ func init() {
 func load() {
 	configor.Load(&System, "config.yml")
 
-	if err := validate(System.Requests); err != nil {
+	if err := validate(System.Targets.Requests); err != nil {
 		log.Fatal().Err(err).Msg("Invalid Request data in config file")
 	}
-	System.Requests = generateAndAssignIdsForRequests(System.Requests)
+	System.Targets.Requests = generateAndAssignIdsForRequests(System.Targets.Requests)
 }
 
 // ReLoad system configuration
