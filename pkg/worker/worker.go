@@ -1,11 +1,13 @@
 package worker
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/rs/zerolog/log"
 
 	"devcircus.com/cerberus/pkg/requests"
+	"devcircus.com/cerberus/pkg/util/shell"
 )
 
 // Worker execution data
@@ -30,17 +32,25 @@ func (w *Worker) Start() {
 func (w *Worker) doWork() {
 	//go w.listenToRequestChannel()
 	go w.createTicker()
+
 	for {
 		<-w.requestChannel
 		//throttle <- 1
 		log.Debug().Msgf("Performing request: %s %s", w.rConfig.RequestType, w.rConfig.URL)
+
 		reqErr := requests.PerformRequest(w.rConfig, nil)
 
 		if reqErr != nil {
 			log.Warn().Msgf("Error requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
+			stdout, stderr, _ := shell.RunCommand("ls", "-ltr")
+			fmt.Println("--- stdout ---")
+			fmt.Println(stdout)
+			fmt.Println("--- stderr ---")
+			fmt.Println(stderr)
 		} else {
 			log.Info().Msgf("Epic win requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
 		}
+
 	}
 }
 

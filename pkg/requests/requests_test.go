@@ -4,19 +4,6 @@ import (
 	"testing"
 )
 
-func TestRequestsInit(t *testing.T) {
-
-	data := make([]RequestConfig, 0)
-	google := RequestConfig{1, "http://google.com", "GET", nil, nil, nil, 200, 100, 1}
-	data = append(data, google)
-
-	RequestsInit(data, 0)
-
-	if len(RequestsList) != 1 {
-		t.Error("Request initalize failed")
-	}
-}
-
 func TestGetRequest(t *testing.T) {
 	google := RequestConfig{1, "http://google.com", "GET", nil, nil, nil, 200, 100, 1}
 
