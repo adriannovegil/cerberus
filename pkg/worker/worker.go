@@ -6,18 +6,18 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"devcircus.com/cerberus/pkg/requests"
+	"devcircus.com/cerberus/pkg/target/request"
 	"devcircus.com/cerberus/pkg/util/shell"
 )
 
 // Worker execution data
 type Worker struct {
-	rConfig        requests.RequestConfig
+	rConfig        request.Config
 	requestChannel chan bool
 }
 
 // NewWorker create a new instance worker
-func NewWorker(data requests.RequestConfig) *Worker {
+func NewWorker(data request.Config) *Worker {
 	w := Worker{}
 	w.rConfig = data
 	w.requestChannel = make(chan bool)
@@ -38,7 +38,7 @@ func (w *Worker) doWork() {
 		//throttle <- 1
 		log.Debug().Msgf("Performing request: %s %s", w.rConfig.RequestType, w.rConfig.URL)
 
-		reqErr := requests.PerformRequest(w.rConfig, nil)
+		reqErr := request.PerformRequest(w.rConfig, nil)
 
 		if reqErr != nil {
 			log.Warn().Msgf("Error requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)

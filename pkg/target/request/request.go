@@ -1,4 +1,4 @@
-package requests
+package request
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ import (
 
 var (
 	// RequestsList list of requests configuration
-	RequestsList []RequestConfig
+	RequestsList []Config
 	throttle     chan int
 )
 
@@ -29,8 +29,8 @@ const (
 	JSONContentType = "application/json"
 )
 
-// RequestConfig data structure
-type RequestConfig struct {
+// Config data structure
+type Config struct {
 	ID           int
 	URL          string            `yaml:"url"`
 	RequestType  string            `yaml:"requestType"`
@@ -43,7 +43,7 @@ type RequestConfig struct {
 }
 
 // SetID set Id for request
-func (requestConfig *RequestConfig) SetID(id int) {
+func (requestConfig *Config) SetID(id int) {
 	requestConfig.ID = id
 }
 
@@ -88,7 +88,7 @@ func (requestConfig *RequestConfig) SetID(id int) {
 //}
 
 // PerformRequest takes the date from requestConfig and creates http request and executes it
-func PerformRequest(requestConfig RequestConfig, throttle chan int) error {
+func PerformRequest(requestConfig Config, throttle chan int) error {
 	//Remove value from throttel channel when request is completed
 	defer func() {
 		if throttle != nil {

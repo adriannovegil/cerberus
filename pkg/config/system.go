@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"devcircus.com/cerberus/pkg/requests"
+	"devcircus.com/cerberus/pkg/target/request"
 	"devcircus.com/cerberus/pkg/util/logger"
 )
 
@@ -22,7 +22,7 @@ var System = struct {
 
 // Targets to control
 type Targets struct {
-	Requests []requests.RequestConfig `yaml:"requests"`
+	Requests []request.Config `yaml:"requests"`
 }
 
 func init() {

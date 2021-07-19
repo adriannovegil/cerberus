@@ -6,13 +6,13 @@ import (
 	"net/url"
 	"time"
 
-	"devcircus.com/cerberus/pkg/requests"
-	"devcircus.com/cerberus/pkg/util/constants"
+	"devcircus.com/cerberus/pkg/target/request"
+	"devcircus.com/cerberus/pkg/util/constant"
 )
 
 // Checks whether each request in config file has valid data
 // Creates unique ids for each request using math/rand
-func generateAndAssignIdsForRequests(reqs []requests.RequestConfig) []requests.RequestConfig {
+func generateAndAssignIdsForRequests(reqs []request.Config) []request.Config {
 	source := rand.NewSource(time.Now().UnixNano())
 	random := rand.New(source)
 
@@ -21,7 +21,7 @@ func generateAndAssignIdsForRequests(reqs []requests.RequestConfig) []requests.R
 	ids := make(map[int]int64, 0)
 
 	// an array of new requests data after updating the ids
-	newreqs := make([]requests.RequestConfig, 0)
+	newreqs := make([]request.Config, 0)
 
 	for _, requestConfig := range reqs {
 		//Set a random value as id
@@ -35,7 +35,7 @@ func generateAndAssignIdsForRequests(reqs []requests.RequestConfig) []requests.R
 }
 
 // Validate whether all requestConfig fields are valid
-func validate(reqs []requests.RequestConfig) error {
+func validate(reqs []request.Config) error {
 
 	for _, requestConfig := range reqs {
 
@@ -56,11 +56,11 @@ func validate(reqs []requests.RequestConfig) error {
 		}
 
 		if requestConfig.ResponseCode == 0 {
-			requestConfig.ResponseCode = constants.DefaultResponseCode
+			requestConfig.ResponseCode = constant.DefaultResponseCode
 		}
 
 		if requestConfig.CheckEvery == 0 {
-			defTime, _ := time.ParseDuration(constants.DefaultTime)
+			defTime, _ := time.ParseDuration(constant.DefaultTime)
 			requestConfig.CheckEvery = defTime
 		}
 	}
