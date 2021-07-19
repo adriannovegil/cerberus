@@ -9,7 +9,7 @@ require (
 	github.com/jinzhu/configor v1.2.1
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/namsral/flag v1.7.4-pre // indirect
-	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v0.9.2 // indirect
 	github.com/robfig/config v0.0.0-20141207224736-0f78529c8c7e // indirect
 	github.com/rs/zerolog v1.23.0

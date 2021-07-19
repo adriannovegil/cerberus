@@ -15,7 +15,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   config.System.AppName,
+	Use:   config.Config.AppName,
 	Short: "Cerberus - Monitor your URIs from your any place and get notified when your system is down or response time is more than expected.",
 	Long: `Monitor your URIs from your any place and get notified when your system is
 down or response time is more than expected.

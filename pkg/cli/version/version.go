@@ -16,7 +16,7 @@ func NewCmdVersion() *cobra.Command {
 		Use:   "version",
 		Short: "show version statement",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("cerberus", config.System.Version)
+			fmt.Println("cerberus", config.Config.Version)
 		},
 	}
 }

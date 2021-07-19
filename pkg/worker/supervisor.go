@@ -31,7 +31,7 @@ func NewSupervisor() *Supervisor {
 // Run launch the worker jobs
 func (s *Supervisor) Run() {
 
-	data := config.System.Targets.Requests
+	data := config.Config.Targets.Requests
 	for i, requestConfig := range data {
 		log.Debug().Msgf("Launching worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
 		w := NewWorker(requestConfig)
