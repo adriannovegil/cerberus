@@ -17,20 +17,27 @@ const (
 
 // Config data structure
 type Config struct {
-	Name    string   `yaml:"name"`
-	Type    string   `yaml:"type"`
-	Actions []string `yaml:"actions"`
+	Name         string `yaml:"name"`
+	Type         string `yaml:"type"`
+	AllowFailure bool   `yaml:"allow_failure"`
+	Commands     []Command
+}
+
+// Command data structure
+type Command struct {
+	Command []string `yaml:"command"`
+	Args    []string `yaml:"args"`
 }
 
 // Execute the fallback actions
 func Execute(ctx context.Context, cfg Config) error {
 	switch cfg.Type {
 	case WebhookType:
-		return ExecuteWebHook(ctx, cfg)
+		return ExecuteWebHooks(ctx, cfg)
 	case CommandType:
-		return ExecuteCommand(ctx, cfg)
+		return ExecuteCommands(ctx, cfg)
 	case ScriptType:
-		return ExecuteScript(ctx, cfg)
+		return ExecuteScripts(ctx, cfg)
 	default:
 		return errors.Errorf("invalid proto '%s'", cfg.Type)
 	}
