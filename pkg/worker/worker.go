@@ -13,8 +13,9 @@ import (
 
 // Worker execution data
 type Worker struct {
-	rConfig        request.Config
-	requestChannel chan bool
+	rConfig             request.Config
+	requestChannel      chan bool
+	timeRecorderChannel chan bool
 }
 
 // NewWorker create a new instance worker
@@ -22,6 +23,7 @@ func NewWorker(data request.Config) *Worker {
 	w := Worker{}
 	w.rConfig = data
 	w.requestChannel = make(chan bool)
+	w.timeRecorderChannel = make(chan bool)
 	return &w
 }
 
@@ -31,12 +33,14 @@ func (w *Worker) Start() {
 }
 
 func (w *Worker) doWork() {
-	//go w.listenToRequestChannel()
 	go w.createTicker()
+	go w.timeRecorder()
 
 	for {
 		<-w.requestChannel
+		w.timeRecorderChannel <- true
 		//throttle <- 1
+
 		log.Debug().Msgf("Performing request: %s %s", w.rConfig.RequestType, w.rConfig.URL)
 
 		reqErr := request.PerformRequest(w.rConfig, nil)
@@ -52,7 +56,7 @@ func (w *Worker) doWork() {
 		} else {
 			log.Info().Msgf("Epic win requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
 		}
-
+		w.timeRecorderChannel <- true
 	}
 }
 
@@ -69,5 +73,15 @@ func (w *Worker) createTicker() {
 			ticker.Stop()
 			return
 		}
+	}
+}
+
+func (w *Worker) timeRecorder() {
+	for {
+		<-w.timeRecorderChannel
+		start := time.Now()
+		<-w.timeRecorderChannel
+		elapsed := time.Since(start)
+		log.Debug().Msgf("Task executed in: %d miliseconds", elapsed.Nanoseconds()/1000000)
 	}
 }
