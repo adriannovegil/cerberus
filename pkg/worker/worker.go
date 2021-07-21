@@ -8,6 +8,7 @@ import (
 
 	"devcircus.com/cerberus/pkg/config"
 	"devcircus.com/cerberus/pkg/fallback"
+	"devcircus.com/cerberus/pkg/metrics"
 	"devcircus.com/cerberus/pkg/target/request"
 )
 
@@ -28,13 +29,14 @@ func NewWorker(data request.Config) *Worker {
 }
 
 // Start the job
-func (w *Worker) Start() {
-	go w.doWork()
+func (w *Worker) Start(ctx context.Context) {
+	go w.doWork(ctx)
 }
 
-func (w *Worker) doWork() {
+func (w *Worker) doWork(ctx context.Context) {
 	go w.createTicker()
 	go w.timeRecorder()
+	metricsRecorder, _ := metrics.RecorderFromContext(ctx)
 
 	for {
 		<-w.requestChannel
@@ -45,11 +47,13 @@ func (w *Worker) doWork() {
 
 		reqErr := request.PerformRequest(w.rConfig, nil)
 
+		metricsRecorder.IncRetry()
+
 		if reqErr != nil {
 			log.Warn().Msgf("Error requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
 
 			for _, fallbackActionName := range w.rConfig.Fallbacks {
-				fallback.Execute(context.TODO(),
+				fallback.Execute(ctx,
 					*config.GetFallbackCOnfigurationByName(fallbackActionName))
 			}
 
