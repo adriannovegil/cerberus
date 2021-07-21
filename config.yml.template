@@ -7,45 +7,60 @@ loglevel: info
 
 concurrency: 1
 
-requests:
-- url: http://mywebsite.com/v1/data
-  requestType: POST
-  headers:
-    Authorization: Bearer ac2168444f4de69c27d6384ea2ccf61a49669be5a2fb037ccc1f
-    Content-Type: application/json
-  formParams:
-    description: sanath test
-    url: http://google.com
-  checkEvery: 30
-  responseCode: 200
-  responseTime: 800
-- url: http://mywebsite.com/v1/data
-  requestType: GET
-  headers:
-    Authorization: Bearer ac2168444f4de69c27d6384ea2ccf61a49669be5a2fb037ccc1f
-  urlParams:
-    name: statusok
-  checkEvery: 300
-  responseCode: 200
-  responseTime: 800
-- url: http://something.com/v1/data
-  requestType: DELETE
-  formParams:
-    name: statusok
-  checkEvery: 300
-  responseCode: 200
-  responseTime: 800
-- url: http://www.google.es
-  requestType: GET
-  headers: {}
-  params: {}
-  checkEvery: 5
-  responseCode: 200
-  responseTime: 800
-- url: http://www.googlefail.es
-  requestType: GET
-  headers: {}
-  params: {}
-  checkEvery: 5
-  responseCode: 200
-  responseTime: 800
+fallbacks:
+  - name: command-test
+    type: command
+    allow_failure: true
+    commands:
+      - command: ["echo"]
+        args: [Hello world"]
+      - command: ["ls"]
+        args: ["-a", "-l"]
+
+targets:
+  requests:
+    - url: 'http://mywebsite.com/v1/data'
+      requestType: GET
+      headers:
+        Authorization: Bearer ac2168444f4de69c27d6384ea2ccf61a49669be5a2fb037ccc1f
+      urlParams:
+        name: statusok
+      checkEvery: 300
+      responseCode: 200z
+      responseTime: 800
+    - url: 'http://mywebsite.com/v1/data'
+      requestType: POST
+      headers:
+        Authorization: Bearer ac2168444f4de69c27d6384ea2ccf61a49669be5a2fb037ccc1f
+        Content-Type: application/json
+      formParams:
+        description: sanath test
+        url: 'http://google.com'
+      checkEvery: 30
+      responseCode: 200
+      responseTime: 800
+    - url: 'http://something.com/v1/data'
+      requestType: DELETE
+      formParams:
+        name: statusok
+      checkEvery: 300
+      responseCode: 200
+      responseTime: 800
+    - url: 'https://google.com'
+      requestType: GET
+      headers: {}
+      params: {}
+      checkEvery: 5
+      responseCode: 200
+      responseTime: 800
+      fallbacks:
+        - command-test
+    - url: 'https://google.fail.com'
+      requestType: GET
+      headers: {}
+      params: {}
+      checkEvery: 5
+      responseCode: 200
+      responseTime: 800
+      fallbacks:
+        - command-test

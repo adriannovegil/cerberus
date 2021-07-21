@@ -17,10 +17,10 @@ const (
 
 // Config data structure
 type Config struct {
-	Name         string `yaml:"name"`
-	Type         string `yaml:"type"`
-	AllowFailure bool   `yaml:"allow_failure"`
-	Commands     []Command
+	Name         string    `yaml:"name"`
+	Type         string    `yaml:"type"`
+	AllowFailure bool      `yaml:"allow_failure"`
+	Commands     []Command `yaml:"commands"`
 }
 
 // Command data structure

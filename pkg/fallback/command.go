@@ -14,7 +14,8 @@ func ExecuteCommands(ctx context.Context, cfg Config) error {
 		err := executeCommand(ctx, cmd)
 		if err != nil {
 			if cfg.AllowFailure {
-				log.Warn().Msgf("Error executing the command: %s %s ")
+				log.Warn().Msgf("Error executing the command: %s %s ",
+					cmd.Command, cmd.Args)
 				continue
 			}
 			return err

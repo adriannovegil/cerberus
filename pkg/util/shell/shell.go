@@ -26,11 +26,11 @@ func RedirectToConsole(out []byte, err error) {
 }
 
 // RunCommand Run a shell command
-func RunCommand(name string, args ...string) error {
-	log.Debug().
-		Msg("Run command: " + name + strings.Join(args, ""))
+func RunCommand(command string, args ...string) error {
+	log.Debug().Msgf("Executing command: %s %s",
+		command, strings.Join(args, " "))
 
-	cmd := exec.Command(name, args...)
+	cmd := exec.Command(command, args...)
 	err := cmd.Run()
 
 	if err != nil {
