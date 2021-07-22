@@ -7,6 +7,12 @@ loglevel: info
 
 concurrency: 1
 
+metrics:
+  prometheus:
+    enable: true
+    port: 8081
+    path: "/metrics"
+
 fallbacks:
   - name: command-test
     type: command

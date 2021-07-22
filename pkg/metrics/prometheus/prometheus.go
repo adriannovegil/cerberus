@@ -1,10 +1,12 @@
-package metrics
+package prometheus
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+
+	"devcircus.com/cerberus/pkg/metrics"
 )
 
 var (
@@ -18,6 +20,13 @@ var (
 	promChaosSubsystem            = "chaos"
 	promConcurrencyLimitSubsystem = "concurrencylimit"
 )
+
+// Config data structure
+type Config struct {
+	Enable bool   `yaml:"enable"`
+	Port   int    `yaml:"port"`
+	Path   string `yaml:"path"`
+}
 
 type prometheusRec struct {
 	// Metrics.
@@ -41,7 +50,7 @@ type prometheusRec struct {
 
 // NewPrometheusRecorder returns a new Recorder that knows how to measure
 // using Prometheus kind metrics.
-func NewPrometheusRecorder(reg prometheus.Registerer) Recorder {
+func NewPrometheusRecorder(reg prometheus.Registerer) metrics.Recorder {
 	p := &prometheusRec{
 		reg: reg,
 	}
@@ -50,7 +59,7 @@ func NewPrometheusRecorder(reg prometheus.Registerer) Recorder {
 	return p
 }
 
-func (p prometheusRec) WithID(id string) Recorder {
+func (p prometheusRec) WithID(id string) metrics.Recorder {
 	return &prometheusRec{
 		cmdExecutionDuration:           p.cmdExecutionDuration,
 		retryRetries:                   p.retryRetries,

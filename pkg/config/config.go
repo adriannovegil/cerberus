@@ -8,16 +8,18 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"devcircus.com/cerberus/pkg/fallback"
+	"devcircus.com/cerberus/pkg/metrics/prometheus"
 	"devcircus.com/cerberus/pkg/target/request"
 	"devcircus.com/cerberus/pkg/util/logger"
 )
 
 // Config configuration
 var Config = struct {
-	AppName     string            `yaml:"appname"`
-	Version     string            `yaml:"version"`
-	LogLevel    string            `yaml:"loglevel"`
-	Concurrency int               `yaml:"concurrency"`
+	AppName     string `yaml:"appname"`
+	Version     string `yaml:"version"`
+	LogLevel    string `yaml:"loglevel"`
+	Concurrency int    `yaml:"concurrency"`
+	Metrics     Metrics
 	Fallbacks   []fallback.Config `yaml:"fallbacks"`
 	Targets     Targets
 }{}
@@ -25,6 +27,11 @@ var Config = struct {
 // Targets to control
 type Targets struct {
 	Requests []request.Config `yaml:"requests"`
+}
+
+// Metrics recorders
+type Metrics struct {
+	Prometheus prometheus.Config `yaml:"prometheus"`
 }
 
 func init() {

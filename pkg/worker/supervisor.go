@@ -6,13 +6,14 @@ import (
 	"os"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	cPrometheus "github.com/prometheus/client_golang/prometheus"
+	cPromHttp "github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog/log"
 
 	"devcircus.com/cerberus/pkg/config"
 	"devcircus.com/cerberus/pkg/execute"
 	"devcircus.com/cerberus/pkg/metrics"
+	"devcircus.com/cerberus/pkg/metrics/prometheus"
 )
 
 // Supervisor config data
@@ -36,11 +37,11 @@ func NewSupervisor() *Supervisor {
 // Run launch the worker jobs
 func (s *Supervisor) Run() {
 	// Prometheus registry to expose metrics.
-	promreg := prometheus.NewRegistry()
+	promreg := cPrometheus.NewRegistry()
 	go func() {
-		http.ListenAndServe(":8081", promhttp.HandlerFor(promreg, promhttp.HandlerOpts{}))
+		http.ListenAndServe(":8081", cPromHttp.HandlerFor(promreg, cPromHttp.HandlerOpts{}))
 	}()
-	s.MetricsRecorder = metrics.NewPrometheusRecorder(promreg)
+	s.MetricsRecorder = prometheus.NewPrometheusRecorder(promreg)
 
 	defer func(start time.Time) {
 		s.MetricsRecorder.ObserveCommandExecution(start, true)
