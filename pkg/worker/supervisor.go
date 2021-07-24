@@ -2,12 +2,9 @@ package worker
 
 import (
 	"context"
-	"net/http"
 	"os"
 	"time"
 
-	cPrometheus "github.com/prometheus/client_golang/prometheus"
-	cPromHttp "github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog/log"
 
 	"devcircus.com/cerberus/pkg/config"
@@ -36,13 +33,10 @@ func NewSupervisor() *Supervisor {
 
 // Run launch the worker jobs
 func (s *Supervisor) Run() {
-	// Prometheus registry to expose metrics.
-	promreg := cPrometheus.NewRegistry()
-	go func() {
-		http.ListenAndServe(":8081", cPromHttp.HandlerFor(promreg, cPromHttp.HandlerOpts{}))
-	}()
-	s.MetricsRecorder = prometheus.NewPrometheusRecorder(promreg)
 
+	registerer := prometheus.StartPrometheusServer()
+
+	s.MetricsRecorder = prometheus.NewPrometheusRecorder(registerer)
 	defer func(start time.Time) {
 		s.MetricsRecorder.ObserveCommandExecution(start, true)
 	}(time.Now())
