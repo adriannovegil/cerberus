@@ -13,7 +13,7 @@ require (
 	github.com/prometheus/client_golang v0.9.2
 	github.com/robfig/config v0.0.0-20141207224736-0f78529c8c7e // indirect
 	github.com/rs/zerolog v1.23.0
-	github.com/segmentio/ksuid v1.0.4 // indirect
+	github.com/segmentio/ksuid v1.0.4
 	github.com/sevlyar/go-daemon v0.1.5
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/slok/goresilience v0.2.0 // indirect

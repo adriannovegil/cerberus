@@ -22,8 +22,9 @@ type Worker struct {
 }
 
 // NewWorker create a new instance worker
-func NewWorker(data request.Config) *Worker {
+func NewWorker(id string, data request.Config) *Worker {
 	w := Worker{}
+	w.ID = id
 	w.rConfig = data
 	w.requestChannel = make(chan bool)
 	w.timeRecorderChannel = make(chan bool)

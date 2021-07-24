@@ -51,6 +51,7 @@ github.com/rs/zerolog/internal/json
 github.com/rs/zerolog/log
 # github.com/segmentio/ksuid v1.0.4
 ## explicit
+github.com/segmentio/ksuid
 # github.com/sevlyar/go-daemon v0.1.5
 ## explicit
 github.com/sevlyar/go-daemon

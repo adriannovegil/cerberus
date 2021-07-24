@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
+	"github.com/segmentio/ksuid"
 
 	"devcircus.com/cerberus/pkg/config"
 	"devcircus.com/cerberus/pkg/execute"
@@ -35,7 +36,7 @@ func NewSupervisor() *Supervisor {
 func (s *Supervisor) Run() {
 
 	s.MetricsRecorder = prometheus.NewRecorder(
-		prometheus.StartPrometheusServer()).WithID("dummy")
+		prometheus.StartPrometheusServer()).WithID(s.genKsuid().String())
 
 	defer func(start time.Time) {
 		s.MetricsRecorder.ObserveCommandExecution(start, true)
@@ -47,7 +48,7 @@ func (s *Supervisor) Run() {
 	for i, requestConfig := range data {
 		log.Debug().Msgf("Launching worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
 
-		w := NewWorker(requestConfig)
+		w := NewWorker(s.genKsuid().String(), requestConfig)
 		workers = append(workers, *w)
 		w.Start(ctx)
 	}
@@ -70,4 +71,8 @@ LOOP:
 		}
 	}
 	os.Exit(1)
+}
+
+func (s *Supervisor) genKsuid() ksuid.KSUID {
+	return ksuid.New()
 }
