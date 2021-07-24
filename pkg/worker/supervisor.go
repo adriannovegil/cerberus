@@ -38,9 +38,9 @@ func (s *Supervisor) Run() {
 	s.MetricsRecorder = prometheus.NewRecorder(
 		prometheus.StartPrometheusServer()).WithID(s.genKsuid().String())
 
-	defer func(start time.Time) {
-		s.MetricsRecorder.ObserveCommandExecution(start, true)
-	}(time.Now())
+	//defer func(start time.Time) {
+	//	s.MetricsRecorder.ObserveCommandExecution(start, true)
+	//}(time.Now())
 
 	ctx := metrics.SetRecorderOnContext(context.TODO(), s.MetricsRecorder)
 

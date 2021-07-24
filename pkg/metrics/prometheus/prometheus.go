@@ -20,7 +20,9 @@ func StartPrometheusServer() cPrometheus.Registerer {
 	promreg := cPrometheus.NewRegistry()
 
 	go func() {
-		http.ListenAndServe(":8081", cPromHttp.HandlerFor(promreg, cPromHttp.HandlerOpts{}))
+		http.Handle("/metrics",
+			cPromHttp.HandlerFor(promreg, cPromHttp.HandlerOpts{}))
+		http.ListenAndServe(":8081", nil)
 	}()
 
 	return promreg

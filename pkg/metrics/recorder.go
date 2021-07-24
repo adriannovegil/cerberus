@@ -8,31 +8,31 @@ type Recorder interface {
 	// measured with the obtained recorder will be identified with
 	// the name.
 	WithID(id string) Recorder
-	// ObserveCommandExecution will measure the exeuction of the runner chain.
-	ObserveCommandExecution(start time.Time, success bool)
+	// IncAttempt will increment the number of attempts.
+	IncAttempt(target string)
 	// IncRetry will increment the number of retries.
-	IncRetry(worker string)
+	IncRetry(target string)
 	// IncTimeout will increment the number of timeouts.
-	IncTimeout()
+	IncTimeout(target string)
 	// IncBulkheadQueued increments the number of queued Funcs to execute.
-	IncBulkheadQueued()
+	IncBulkheadQueued(target string)
 	// IncBulkheadProcessed increments the number of processed Funcs to execute.
-	IncBulkheadProcessed()
+	IncBulkheadProcessed(target string)
 	// IncBulkheadProcessed increments the number of timeouts Funcs waiting  to execute.
-	IncBulkheadTimeout()
+	IncBulkheadTimeout(target string)
 	// IncCircuitbreakerState increments the number of state change.
-	IncCircuitbreakerState(state string)
+	IncCircuitbreakerState(target string, state string)
 	// IncChaosInjectedFailure increments the number of times injected failure.
-	IncChaosInjectedFailure(kind string)
+	IncChaosInjectedFailure(target string, kind string)
 	// SetConcurrencyLimitInflightExecutions sets the number of queued and executions at a given moment.
-	SetConcurrencyLimitInflightExecutions(q int)
+	SetConcurrencyLimitInflightExecutions(target string, q int)
 	// SetConcurrencyLimitExecutingExecutions sets the number of executions at a given moment.
-	SetConcurrencyLimitExecutingExecutions(q int)
+	SetConcurrencyLimitExecutingExecutions(target string, q int)
 	// IncConcurrencyLimitResult increments the results obtained by the executions after applying the
 	// limiter result policy.
-	IncConcurrencyLimitResult(result string)
+	IncConcurrencyLimitResult(target string, result string)
 	// SetConcurrencyLimitLimiterLimit sets the current limit the limiter algorithm has calculated.
-	SetConcurrencyLimitLimiterLimit(limit int)
+	SetConcurrencyLimitLimiterLimit(target string, limit int)
 	// ObserveConcurrencyLimitQueuedTime will measure the duration of a function waiting on a queue until it's executed.
-	ObserveConcurrencyLimitQueuedTime(start time.Time)
+	ObserveConcurrencyLimitQueuedTime(target string, start time.Time)
 }
