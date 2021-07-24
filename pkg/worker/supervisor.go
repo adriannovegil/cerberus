@@ -23,7 +23,7 @@ type Supervisor struct {
 const TickerTime = 5
 
 var (
-	workers []Worker
+	workers []RequestWorker
 )
 
 // NewSupervisor create a new supervisor worker
@@ -38,19 +38,11 @@ func (s *Supervisor) Run() {
 	s.MetricsRecorder = prometheus.NewRecorder(
 		prometheus.StartPrometheusServer()).WithID(s.genKsuid().String())
 
-	//defer func(start time.Time) {
-	//	s.MetricsRecorder.ObserveCommandExecution(start, true)
-	//}(time.Now())
-
 	ctx := metrics.SetRecorderOnContext(context.TODO(), s.MetricsRecorder)
 
-	data := config.Config.Targets.Requests
-	for i, requestConfig := range data {
-		log.Debug().Msgf("Launching worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
-
-		w := NewWorker(s.genKsuid().String(), requestConfig)
-		workers = append(workers, *w)
-		w.Start(ctx)
+	if len(config.Config.Targets.Requests) > 0 {
+		log.Debug().Msg("Request target detected! executing ...")
+		s.launchRequestTargets(ctx)
 	}
 
 LOOP:
@@ -71,6 +63,17 @@ LOOP:
 		}
 	}
 	os.Exit(1)
+}
+
+func (s *Supervisor) launchRequestTargets(ctx context.Context) {
+	requestTargets := config.Config.Targets.Requests
+	for i, requestConfig := range requestTargets {
+		log.Debug().Msgf("Launching request worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
+
+		w := NewRequestWorker(s.genKsuid().String(), requestConfig)
+		workers = append(workers, *w)
+		w.Start(ctx)
+	}
 }
 
 func (s *Supervisor) genKsuid() ksuid.KSUID {
