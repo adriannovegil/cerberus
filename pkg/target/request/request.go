@@ -31,7 +31,7 @@ const (
 
 // Config data structure
 type Config struct {
-	ID           int
+	ID           string            `yaml:"id"`
 	URL          string            `yaml:"url"`
 	RequestType  string            `yaml:"requestType"`
 	Headers      map[string]string `yaml:"headers"`
@@ -44,9 +44,9 @@ type Config struct {
 }
 
 // SetID set Id for request
-func (requestConfig *Config) SetID(id int) {
-	requestConfig.ID = id
-}
+//func (requestConfig *Config) SetID(id int) {
+//	requestConfig.ID = id
+//}
 
 // Init Initialize data from config file and check all requests
 //func Init(data []RequestConfig, concurrency int) {
@@ -148,15 +148,6 @@ func PerformRequest(requestConfig Config, throttle chan int) error {
 
 	//Add headers to the request
 	AddHeaders(request, requestConfig.Headers)
-
-	//TODO: put timeout ?
-	/*
-		timeout := 10 * requestConfig.ResponseTime
-
-		client := &http.Client{
-			Timeout: timeout,
-		}
-	*/
 
 	client := &http.Client{}
 	//start := time.Now()

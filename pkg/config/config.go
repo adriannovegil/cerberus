@@ -51,7 +51,6 @@ func load() {
 	if err := validate(Config.Targets.Requests); err != nil {
 		log.Fatal().Err(err).Msg("Invalid Request data in config file")
 	}
-	Config.Targets.Requests = generateAndAssignIdsForRequests(Config.Targets.Requests)
 }
 
 // ReLoad system configuration

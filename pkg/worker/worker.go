@@ -50,8 +50,8 @@ func (w *Worker) doWork(ctx context.Context) {
 
 		reqErr := request.PerformRequest(w.rConfig, nil)
 
-		metricsRecorder.IncRetry(w.ID)
-		metricsRecorder.IncAttempt(w.ID)
+		metricsRecorder.IncRetry(w.rConfig.ID)
+		metricsRecorder.IncAttempt(w.rConfig.ID)
 
 		if reqErr != nil {
 			log.Warn().Msgf("Error requesting: %s %s", w.rConfig.RequestType, w.rConfig.URL)
