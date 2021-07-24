@@ -34,9 +34,9 @@ func NewSupervisor() *Supervisor {
 // Run launch the worker jobs
 func (s *Supervisor) Run() {
 
-	registerer := prometheus.StartPrometheusServer()
+	s.MetricsRecorder = prometheus.NewRecorder(
+		prometheus.StartPrometheusServer()).WithID("dummy")
 
-	s.MetricsRecorder = prometheus.NewPrometheusRecorder(registerer)
 	defer func(start time.Time) {
 		s.MetricsRecorder.ObserveCommandExecution(start, true)
 	}(time.Now())
@@ -46,6 +46,7 @@ func (s *Supervisor) Run() {
 	data := config.Config.Targets.Requests
 	for i, requestConfig := range data {
 		log.Debug().Msgf("Launching worker #%d: %s %s", i, requestConfig.RequestType, requestConfig.URL)
+
 		w := NewWorker(requestConfig)
 		workers = append(workers, *w)
 		w.Start(ctx)

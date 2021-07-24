@@ -41,9 +41,9 @@ type recorder struct {
 	reg cPrometheus.Registerer
 }
 
-// NewPrometheusRecorder returns a new Recorder that knows how to measure
+// NewRecorder returns a new Recorder that knows how to measure
 // using Prometheus kind metrics.
-func NewPrometheusRecorder(reg cPrometheus.Registerer) metrics.Recorder {
+func NewRecorder(reg cPrometheus.Registerer) metrics.Recorder {
 	r := &recorder{
 		reg: reg,
 	}

@@ -17,11 +17,11 @@ type Config struct {
 // StartPrometheusServer start the Prometheus service endpoint
 func StartPrometheusServer() cPrometheus.Registerer {
 	// Prometheus registry to expose metrics.
-	registerer := cPrometheus.NewRegistry()
+	promreg := cPrometheus.NewRegistry()
 
 	go func() {
-		http.ListenAndServe(":8081", cPromHttp.HandlerFor(registerer, cPromHttp.HandlerOpts{}))
+		http.ListenAndServe(":8081", cPromHttp.HandlerFor(promreg, cPromHttp.HandlerOpts{}))
 	}()
 
-	return registerer
+	return promreg
 }

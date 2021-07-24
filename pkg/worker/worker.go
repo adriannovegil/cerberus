@@ -14,9 +14,11 @@ import (
 
 // Worker execution data
 type Worker struct {
+	ID                  string
 	rConfig             request.Config
 	requestChannel      chan bool
 	timeRecorderChannel chan bool
+	MetricsRecorder     metrics.Recorder
 }
 
 // NewWorker create a new instance worker
