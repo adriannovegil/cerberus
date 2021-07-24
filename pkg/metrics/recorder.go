@@ -11,7 +11,7 @@ type Recorder interface {
 	// ObserveCommandExecution will measure the exeuction of the runner chain.
 	ObserveCommandExecution(start time.Time, success bool)
 	// IncRetry will increment the number of retries.
-	IncRetry()
+	IncRetry(worker string)
 	// IncTimeout will increment the number of timeouts.
 	IncTimeout()
 	// IncBulkheadQueued increments the number of queued Funcs to execute.

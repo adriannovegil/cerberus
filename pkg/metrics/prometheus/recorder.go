@@ -87,7 +87,7 @@ func (r *recorder) registerMetrics() {
 		Subsystem: promRetrySubsystem,
 		Name:      "retries_total",
 		Help:      "Total number of retries made by the retry runner.",
-	}, []string{"id"})
+	}, []string{"id", "worker"})
 
 	r.timeoutTimeouts = cPrometheus.NewCounterVec(cPrometheus.CounterOpts{
 		Namespace: promNamespace,
@@ -188,8 +188,8 @@ func (r recorder) ObserveCommandExecution(start time.Time, success bool) {
 	r.cmdExecutionDuration.WithLabelValues(r.id, fmt.Sprintf("%t", success)).Observe(secs)
 }
 
-func (r recorder) IncRetry() {
-	r.retryRetries.WithLabelValues(r.id).Inc()
+func (r recorder) IncRetry(worker string) {
+	r.retryRetries.WithLabelValues(r.id, worker).Inc()
 }
 
 func (r recorder) IncTimeout() {
