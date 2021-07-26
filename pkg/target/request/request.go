@@ -9,7 +9,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"time"
+
+	"devcircus.com/cerberus/pkg/target"
 )
 
 var (
@@ -31,16 +32,14 @@ const (
 
 // Config data structure
 type Config struct {
-	ID           string            `yaml:"id"`
-	URL          string            `yaml:"url"`
-	RequestType  string            `yaml:"requestType"`
-	Headers      map[string]string `yaml:"headers"`
-	FormParams   map[string]string `yaml:"formParams"`
-	URLParams    map[string]string `yaml:"urlParams"`
-	ResponseCode int               `yaml:"responseCode"`
-	ResponseTime int64             `yaml:"responseTime"`
-	CheckEvery   time.Duration     `yaml:"checkEvery"`
-	Fallbacks    []string          `yaml:"fallbacks"`
+	target.Target `yaml:"-,inline"`
+	URL           string            `yaml:"url"`
+	RequestType   string            `yaml:"requestType"`
+	Headers       map[string]string `yaml:"headers"`
+	FormParams    map[string]string `yaml:"formParams"`
+	URLParams     map[string]string `yaml:"urlParams"`
+	ResponseCode  int               `yaml:"responseCode"`
+	ResponseTime  int64             `yaml:"responseTime"`
 }
 
 // SetID set Id for request
