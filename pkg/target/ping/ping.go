@@ -1,6 +1,8 @@
 package ping
 
+import "devcircus.com/cerberus/pkg/target"
+
 // Config data structure
 type Config struct {
-	ID string `yaml:"id"`
+	target.Target `yaml:"-,inline"`
 }
